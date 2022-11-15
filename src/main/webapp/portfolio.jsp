@@ -6,6 +6,14 @@
     <title>Portfolio</title>
 </head>
 <body>
+
+    <ul>
+        <li><a href="/portfolio">portfolio</a></li>
+        <li><a href="/order">order</a></li>
+        <li><a href="/register">register</a></li>
+        <li><a href="/login">login</a></li>
+    </ul>
+
     <h1>Portfolio</h1>
     <h3>cash ${userinfo.getFloat("cash")}</h3>
     <h3>portfolio ${userinfo.getFloat("portfolio")}</h3>
