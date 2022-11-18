@@ -4,6 +4,12 @@
     <title>Login</title>
 </head>
 <body>
+<ul>
+    <li><a href="/portfolio">portfolio</a></li>
+    <li><a href="/order">order</a></li>
+    <li><a href="/register">register</a></li>
+    <li><a href="/login">login</a></li>
+</ul>
 <h1>Login Form</h1>
 <form action="${pageContext.request.contextPath}/login" method="POST">
     <label for="email">email</label><br>

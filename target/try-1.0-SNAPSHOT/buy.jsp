@@ -4,6 +4,14 @@
     <title>Buy</title>
 </head>
 <body>
+
+<ul>
+    <li><a href="/portfolio">portfolio</a></li>
+    <li><a href="/order">order</a></li>
+    <li><a href="/register">register</a></li>
+    <li><a href="/login">login</a></li>
+</ul>
+
 <h3>
   Buy / Sell Route
 </h3>

@@ -146,7 +146,8 @@ public class Order {
             throw new RuntimeException(e);
         }
 
-        // logger.info(id + " bought/sold " + shares + " of " + stockTicker + " OrderType: " + orderType);
+        UserHistory insertUserEntry = new UserHistory(stockTicker, shares, orderType, date);
+        insertUserEntry.insertData();
         return "Success";
     }
 }
