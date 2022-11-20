@@ -146,8 +146,8 @@ public class Order {
             throw new RuntimeException(e);
         }
 
-        UserHistory insertUserEntry = new UserHistory(stockTicker, shares, orderType, date);
-        insertUserEntry.insertData();
+        UserHistory insertUserEntry = new UserHistory(id, stockTicker);
+        insertUserEntry.insertData(shares, orderType, date);
         return "Success";
     }
 }
