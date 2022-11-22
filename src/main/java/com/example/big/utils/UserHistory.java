@@ -11,7 +11,7 @@ public class UserHistory {
     String stockTicker;
     String userID;
     HikariDataSource dataSource;
-    UserHistory(String userID, String stockTicker) {
+    public UserHistory(String userID, String stockTicker) {
 
         try {
             this.dataSource = DataBaseConnection.initDatabaseConnectionPool();
@@ -60,6 +60,8 @@ public class UserHistory {
                     stock.put("orderType", resultSet.getString(3));
                     stock.put("entryDate", resultSet.getString(4));
                     stock.put("buyPrice", resultSet.getFloat(5));
+                    float worth = resultSet.getFloat(5) * resultSet.getInt(2);
+                    stock.put("worth", worth);
                     stocks.put(stock);
                 }
             }

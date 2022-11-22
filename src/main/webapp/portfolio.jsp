@@ -12,6 +12,13 @@
         <li><a href="/order">order</a></li>
         <li><a href="/register">register</a></li>
         <li><a href="/login">login</a></li>
+        <li>
+            <form action="/stockticker" method="get">
+                <label for="ticker">Search Stock Ticker</label>
+                <input type="search" id="ticker" name="ticker">
+                <input type="submit">
+            </form>
+        </li>
     </ul>
 
     <h1>Portfolio</h1>
