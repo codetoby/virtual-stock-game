@@ -23,18 +23,19 @@ public class UserHistory {
         this.stockTicker = stockTicker;
     }
 
-    public void insertData(int shares, String orderType, Date entryDate) {
+    public void insertData(int shares, String orderType, Date entryDate, float buyPrice) {
 
         try(Connection connection = dataSource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("""
-                INSERT INTO userhistory (stockTicker, shares, orderType, entryDate)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO userhistory (stockTicker, shares, orderType, entryDate, buyPrice, id)
+                VALUES (?, ?, ?, ?, ?, ?)
             """)) {
-                statement.setString(1, userID);
-                statement.setString(2, this.stockTicker);
-                statement.setInt(3, shares);
-                statement.setString(4, orderType);
-                statement.setDate(5, entryDate);
+                statement.setString(1, this.stockTicker);
+                statement.setInt(2, shares);
+                statement.setString(3, orderType);
+                statement.setDate(4, entryDate);
+                statement.setFloat(5, buyPrice);
+                statement.setString(6, this.userID);
                 statement.executeQuery();
             }
         } catch (SQLException e) {

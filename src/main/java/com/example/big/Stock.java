@@ -19,14 +19,16 @@ public class Stock extends HttpServlet {
         Object id = session.getAttribute("id");
         String ticker = request.getParameter("ticker");
 
-        JSONObject stockTicker = new StockTicker().stockInfo(ticker);
-        JSONArray userHistory = new UserHistory(id.toString(), ticker).getUserHistory();
+        JSONObject stockInfo = new StockTicker().stockInfo(ticker);
+        JSONArray userHistory = new UserHistory(id.toString(), ticker.toUpperCase()).getUserHistory();
+
+        System.out.println(userHistory);
+
 
         request.setAttribute("ticker", ticker);
-        request.setAttribute("stockTicker", stockTicker);
+        request.setAttribute("stockTicker", stockInfo);
         request.setAttribute("userHistory", userHistory);
 
-        request.getRequestDispatcher("/stockticker.jsp").forward(request, response);
-
+        request.getRequestDispatcher("/stock.jsp").forward(request, response);
     }
 }

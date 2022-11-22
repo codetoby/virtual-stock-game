@@ -24,7 +24,7 @@ public class Order {
         shares = UserShares;
     }
 
-    public String newOrder() {
+    public String newOrder() throws IOException {
 
         // date in sql format
         long millis = System.currentTimeMillis();
@@ -38,7 +38,16 @@ public class Order {
             throw new RuntimeException(e);
         }
 
+
+        // get the current stock price
+        JSONObject stockInfo = new StockTicker().stockInfo(stockTicker);
+        float stockPrice = stockInfo.getFloat("c");
+
+        // check if stock ticker is valid
+        if (stockInfo.get("d") == null) return "Not a Valid Stock Ticker";
+
         // check if user has enough cash to buy this stock
+
         try (Connection connection = dataSource.getConnection()) {
             boolean findStock = false;
             // check if the user already has the stock in his portfolio
@@ -55,13 +64,6 @@ public class Order {
                 }
             }
 
-            // get the current stock price
-            JSONObject stockInfo = new StockTicker().stockInfo(stockTicker);
-            float stockPrice = stockInfo.getFloat("c");
-
-            // check if stock ticker is valid
-            if (stockInfo.get("d") == null) return "Not a Valid Stock Ticker";
-
             totalAmount = stockPrice * shares;
 
             // check if user has enough cash to buy the stock
@@ -72,6 +74,8 @@ public class Order {
 
             // if user has bought the stock already, and it is still in the portfolio
             if (findStock) {
+
+
 
                 int newShares = 0;
                 float averagePrice = 0;
@@ -135,7 +139,7 @@ public class Order {
                 }
             } else return "You do not have the stock to sell";
 
-        } catch (SQLException | IOException | JSONException e) {
+        } catch (SQLException | JSONException e) {
             throw new RuntimeException(e);
         }
 
@@ -147,7 +151,7 @@ public class Order {
         }
 
         UserHistory insertUserEntry = new UserHistory(id, stockTicker);
-        insertUserEntry.insertData(shares, orderType, date);
+        insertUserEntry.insertData(shares, orderType, date, stockPrice);
         return "Success";
     }
 }
