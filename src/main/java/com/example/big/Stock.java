@@ -22,8 +22,9 @@ public class Stock extends HttpServlet {
         JSONObject stockTicker = new StockTicker().stockInfo(ticker);
         JSONArray userHistory = new UserHistory(id.toString(), ticker).getUserHistory();
 
+        request.setAttribute("ticker", ticker);
         request.setAttribute("stockTicker", stockTicker);
-        request.setAttribute("userHistory", stockTicker);
+        request.setAttribute("userHistory", userHistory);
 
         request.getRequestDispatcher("/stockticker.jsp").forward(request, response);
 
