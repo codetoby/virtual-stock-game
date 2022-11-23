@@ -19,11 +19,8 @@ public class Stock extends HttpServlet {
         Object id = session.getAttribute("id");
         String ticker = request.getParameter("ticker");
 
-        JSONObject stockInfo = new StockTicker().stockInfo(ticker);
+        JSONObject stockInfo = new StockTicker(ticker).stockInfo();
         JSONArray userHistory = new UserHistory(id.toString(), ticker.toUpperCase()).getUserHistory();
-
-        System.out.println(userHistory);
-
 
         request.setAttribute("ticker", ticker);
         request.setAttribute("stockTicker", stockInfo);

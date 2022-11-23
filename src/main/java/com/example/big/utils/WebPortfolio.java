@@ -10,17 +10,17 @@ import java.sql.SQLException;
 
 public class WebPortfolio {
 
-    public static String id;
+    public String id;
 
-    public WebPortfolio(String userid) {
-        id = userid;
+    public WebPortfolio(String id) {
+        this.id = id;
     }
 
     public JSONArray webPortfolio() throws SQLException, IOException {
 
         JSONArray userPortfolio = new JSONArray();
         new UpdatePortfolio(id, null);
-        ResultSet resultSet = UpdatePortfolio.userStocks();
+        ResultSet resultSet =  new UpdatePortfolio(id, null).userStocks();
 
         while(resultSet.next()) {
 
@@ -31,7 +31,7 @@ public class WebPortfolio {
             Date buyDate = resultSet.getDate(3);
             float buyPrice = resultSet.getFloat(4);
 
-            JSONObject stockInfo = new StockTicker().stockInfo(stockTicker);
+            JSONObject stockInfo = new StockTicker(stockTicker).stockInfo();
             float stockPrice = stockInfo.getInt("c");
             float todayChange = stockInfo.get("d") != null ? stockInfo.getFloat("d") : 0F;
             float todayPerChange = stockInfo.get("dp") != null ? stockInfo.getFloat("dp") : 0F;

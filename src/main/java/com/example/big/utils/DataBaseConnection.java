@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 public class DataBaseConnection {
 
-
     public static HikariDataSource initDatabaseConnectionPool() throws SQLException {
 
         HikariDataSource dataSource;

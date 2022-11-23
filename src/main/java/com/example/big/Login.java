@@ -39,23 +39,19 @@ public class Login extends HttpServlet {
             """)) {
                 statement.setString(1, email);
                 ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    String find_email = resultSet.getString(1);
-                    String find_password = resultSet.getString(2);
-                    if (email.equals(find_email)) {
-                        return password.equals(find_password);
-                    } else return false;
-                }
-            return false;
+                String find_email = resultSet.getString(1);
+                String find_password = resultSet.getString(2);
+                if (email.equals(find_email)) {
+                    return password.equals(find_password);
+                } else return false;
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-        @Override
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 
@@ -73,7 +69,6 @@ public class Login extends HttpServlet {
             doGet(request, response);
         }
     }
-
     @Override
     public void destroy() {
         closeDatabaseConnectionPool();

@@ -12,9 +12,15 @@ import java.sql.SQLException;
 
 public class UpdatePortfolio {
 
-    private static final HikariDataSource dataSource;
+    HikariDataSource dataSource;
 
-    static {
+    public String id;
+    public String orderType;
+
+    public UpdatePortfolio(String id, String orderType) {
+        this.id = id;
+        this.orderType = orderType;
+
         try {
             dataSource = DataBaseConnection.initDatabaseConnectionPool();
         } catch (SQLException e) {
@@ -22,15 +28,7 @@ public class UpdatePortfolio {
         }
     }
 
-    public static String id;
-    public static String orderType;
-
-    public UpdatePortfolio(String userid, String UserOrderType) {
-        id = userid;
-        orderType = UserOrderType;
-    }
-
-    public static ResultSet getUserInfo() {
+    public ResultSet getUserInfo() {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("""
             SELECT cash, portfolio from userport WHERE id = ?
@@ -43,7 +41,7 @@ public class UpdatePortfolio {
         }
     }
 
-    public static float portfolioValue() {
+    public float portfolioValue() {
 
         float currentValue = 0;
 
@@ -54,7 +52,7 @@ public class UpdatePortfolio {
                 statement.setString(1, id);
                 ResultSet resultSet = statement.executeQuery();
                 while(resultSet.next()) {
-                    JSONObject stockInfo = new StockTicker().stockInfo(resultSet.getString(1));
+                    JSONObject stockInfo = new StockTicker(resultSet.getString(1)).stockInfo();
                     float stockPrice = stockInfo.getInt("c");
                     currentValue += stockPrice * resultSet.getInt(2);
                 }
@@ -66,21 +64,13 @@ public class UpdatePortfolio {
         return currentValue;
     }
 
-    //public static void main(String[] args) throws SQLException, IOException {
-    //  UpdatePortfolio updatePortfolio = new UpdatePortfolio("tobymelcher@gmail.com", null);
-    //  float webPortfolio = updatePortfolio.portfolioValue();
-    //   System.out.println(webPortfolio);
-    //}
-
-    public static ResultSet userStocks() {
-        int count = 0;
+    public ResultSet userStocks() {
         try(Connection connection = dataSource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("""
                 SELECT stockticker, shares, orderdate, buyPrice from usersportfolio WHERE id = ?
         """)) {
                 statement.setString(1, id);
-                ResultSet resultSet = statement.executeQuery();
-                return resultSet;
+                return statement.executeQuery();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -88,7 +78,7 @@ public class UpdatePortfolio {
     }
 
 
-    public static float totalSpent() {
+    public float totalSpent() {
 
         float totalAmountSpent = 0;
 
@@ -111,7 +101,7 @@ public class UpdatePortfolio {
         return totalAmountSpent;
     }
 
-    public static boolean checkCash(float amountSpent) throws SQLException {
+    public boolean checkCash(float amountSpent) throws SQLException {
 
         float currentCash = 0;
         ResultSet resultSet = getUserInfo();
@@ -121,7 +111,7 @@ public class UpdatePortfolio {
         return !(amountSpent > currentCash);
     }
 
-    public static void updatePortfolioValues(float amountSpent) throws SQLException {
+    public void updatePortfolioValues(float amountSpent) throws SQLException {
 
         float currentCash = 0;
         float currentPortfolioValue = 0;

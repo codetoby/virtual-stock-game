@@ -8,17 +8,15 @@ import java.sql.SQLException;
 
 public class CreateNewPortfolio {
 
-    private static HikariDataSource dataSource;
+    HikariDataSource dataSource;
 
-    static {
+    public CreateNewPortfolio(String id) throws SQLException{
+
         try {
             dataSource = DataBaseConnection.initDatabaseConnectionPool();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public CreateNewPortfolio(String id) throws SQLException{
 
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("""

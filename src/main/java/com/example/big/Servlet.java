@@ -28,10 +28,10 @@ public class Servlet extends HttpServlet {
             userCash = resultSet.getFloat(1);
         }
 
-        new UpdatePortfolio(id, null);
+        UpdatePortfolio updatePortfolio = new UpdatePortfolio(id, null);
 
-        float portfolioValue = UpdatePortfolio.portfolioValue();
-        float totalSpent = UpdatePortfolio.totalSpent();
+        float portfolioValue = updatePortfolio.portfolioValue();
+        float totalSpent = updatePortfolio.totalSpent();
         float profitLoss = (portfolioValue + userCash) - 5000;
         float changeTotal = (profitLoss / totalSpent) * 100;
 

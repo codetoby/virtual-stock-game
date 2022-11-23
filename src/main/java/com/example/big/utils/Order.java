@@ -11,17 +11,27 @@ public class Order {
 
     // private static final Logger logger = Logger.getLogger(Order.class);
 
-    public static String id;
-    public static String stockTicker;
-    public static String orderType;
-    public static int shares;
-    public static float totalAmount;
+    public String id;
+    public String stockTicker;
+    public String orderType;
+    public int shares;
+    public float totalAmount;
+    HikariDataSource dataSource;
 
-    public Order(String Userid, String UserStockTicker, String UserOrderType, int UserShares) {
-        id = Userid;
-        stockTicker = UserStockTicker;
-        orderType = UserOrderType;
-        shares = UserShares;
+    public Order(String id, String stockTicker, String orderType, int shares) {
+
+        this.id = id;
+        this.stockTicker = stockTicker;
+        this.orderType = orderType;
+        this.shares = shares;
+
+        // connect to database
+        try {
+            dataSource = DataBaseConnection.initDatabaseConnectionPool();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public String newOrder() throws IOException {
@@ -30,24 +40,14 @@ public class Order {
         long millis = System.currentTimeMillis();
         Date date = new Date(millis);
 
-        // connect to database
-        HikariDataSource dataSource;
-        try {
-            dataSource = DataBaseConnection.initDatabaseConnectionPool();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
 
         // get the current stock price
-        JSONObject stockInfo = new StockTicker().stockInfo(stockTicker);
+        JSONObject stockInfo = new StockTicker(stockTicker).stockInfo();
         float stockPrice = stockInfo.getFloat("c");
-
         // check if stock ticker is valid
         if (stockInfo.get("d") == null) return "Not a Valid Stock Ticker";
 
         // check if user has enough cash to buy this stock
-
         try (Connection connection = dataSource.getConnection()) {
             boolean findStock = false;
             // check if the user already has the stock in his portfolio
@@ -67,15 +67,12 @@ public class Order {
             totalAmount = stockPrice * shares;
 
             // check if user has enough cash to buy the stock
-            new UpdatePortfolio(id, orderType);
-            boolean checkCash = UpdatePortfolio.checkCash(totalAmount);
+            boolean checkCash = new UpdatePortfolio(id, orderType).checkCash(totalAmount);
 
             if (!checkCash) return "You do not have enough cash";
 
             // if user has bought the stock already, and it is still in the portfolio
             if (findStock) {
-
-
 
                 int newShares = 0;
                 float averagePrice = 0;
@@ -145,7 +142,7 @@ public class Order {
 
         new UpdatePortfolio(id, orderType);
         try {
-            UpdatePortfolio.updatePortfolioValues(totalAmount);
+            new UpdatePortfolio(id, orderType).updatePortfolioValues(totalAmount);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
