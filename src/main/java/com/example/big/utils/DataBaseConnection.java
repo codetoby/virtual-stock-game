@@ -10,9 +10,9 @@ public class DataBaseConnection {
 
         HikariDataSource dataSource;
 
-        String url = "jdbc:mariadb://188.68.41.89:3308/java";
-        String username_database = "toby";
-        String password_database = "AktienBotTobyCarl";
+        String url = "jdbc:mariadb://.../java";
+        String username_database = "";
+        String password_database = "";
 
         dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(url);
