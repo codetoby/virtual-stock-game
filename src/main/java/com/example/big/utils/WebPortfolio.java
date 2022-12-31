@@ -11,16 +11,17 @@ import java.sql.SQLException;
 public class WebPortfolio {
 
     public String id;
+    User user;
 
     public WebPortfolio(String id) {
         this.id = id;
+        user = new User(id);
     }
 
     public JSONArray webPortfolio() throws SQLException, IOException {
 
         JSONArray userPortfolio = new JSONArray();
-        new UpdatePortfolio(id, null);
-        ResultSet resultSet =  new UpdatePortfolio(id, null).userStocks();
+        ResultSet resultSet =  user.getUserStocks();
 
         while(resultSet.next()) {
 

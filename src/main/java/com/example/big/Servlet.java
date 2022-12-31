@@ -1,6 +1,6 @@
 package com.example.big;
 
-import com.example.big.utils.UpdatePortfolio;
+import com.example.big.utils.User;
 import com.example.big.utils.WebPortfolio;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,17 +21,12 @@ public class Servlet extends HttpServlet {
 
     public static JSONObject UserInfo(String id) throws SQLException, JSONException {
 
-        float userCash = 0;
+        User user = new User(id);
 
-        ResultSet resultSet = new UpdatePortfolio(id, null).getUserInfo();
-        while(resultSet.next()) {
-            userCash = resultSet.getFloat(1);
-        }
+        float userCash = user.getUserBalance();
+        float portfolioValue = user.getUserPortfolioValue();
+        float totalSpent = user.getAmountSpent();
 
-        UpdatePortfolio updatePortfolio = new UpdatePortfolio(id, null);
-
-        float portfolioValue = updatePortfolio.portfolioValue();
-        float totalSpent = updatePortfolio.totalSpent();
         float profitLoss = (portfolioValue + userCash) - 5000;
         float changeTotal = (profitLoss / totalSpent) * 100;
 

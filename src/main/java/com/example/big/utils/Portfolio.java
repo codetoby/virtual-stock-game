@@ -1,16 +1,18 @@
 package com.example.big.utils;
 
 import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+public class Portfolio {
 
-public class CreateNewPortfolio {
-
+    String id;
     HikariDataSource dataSource;
+    public Portfolio(String id) {
 
-    public CreateNewPortfolio(String id) throws SQLException{
+        this.id = id;
 
         try {
             dataSource = DataBaseConnection.initDatabaseConnectionPool();
@@ -18,15 +20,19 @@ public class CreateNewPortfolio {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void createPortfolio() throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("""
             INSERT INTO userport (id) VALUES(?)
             """)) {
                 statement.setString(1, id);
                 statement.executeQuery();
-                dataSource.close();
             }
         }
     }
+
+
 
 }

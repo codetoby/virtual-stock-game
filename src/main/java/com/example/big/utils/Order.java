@@ -18,6 +18,8 @@ public class Order {
     public float totalAmount;
     HikariDataSource dataSource;
 
+    User user;
+
     public Order(String id, String stockTicker, String orderType, int shares) {
 
         this.id = id;
@@ -31,6 +33,8 @@ public class Order {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        user = new User(id);
 
     }
 
@@ -67,7 +71,7 @@ public class Order {
             totalAmount = stockPrice * shares;
 
             // check if user has enough cash to buy the stock
-            boolean checkCash = new UpdatePortfolio(id, orderType).checkCash(totalAmount);
+            boolean checkCash = user.checkCash(totalAmount);
 
             if (!checkCash) return "You do not have enough cash";
 
@@ -140,15 +144,16 @@ public class Order {
             throw new RuntimeException(e);
         }
 
-        new UpdatePortfolio(id, orderType);
+
         try {
-            new UpdatePortfolio(id, orderType).updatePortfolioValues(totalAmount);
+           user.updatePortfolioValues(orderType, totalAmount);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         UserHistory insertUserEntry = new UserHistory(id, stockTicker);
         insertUserEntry.insertData(shares, orderType, date, stockPrice);
+        dataSource.close();
         return "Success";
     }
 }

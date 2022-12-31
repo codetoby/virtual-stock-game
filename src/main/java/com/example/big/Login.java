@@ -15,8 +15,6 @@ import java.sql.SQLException;
 @WebServlet(name = "Login", urlPatterns = "/login")
 public class Login extends HttpServlet {
 
-
-
     private static HikariDataSource dataSource;
 
     private static void closeDatabaseConnectionPool() {
@@ -39,12 +37,16 @@ public class Login extends HttpServlet {
             """)) {
                 statement.setString(1, email);
                 ResultSet resultSet = statement.executeQuery();
-                String find_email = resultSet.getString(1);
-                String find_password = resultSet.getString(2);
-                if (email.equals(find_email)) {
-                    return password.equals(find_password);
-                } else return false;
+                while(resultSet.next()) {
+                    String find_email = resultSet.getString(1);
+                    String find_password = resultSet.getString(2);
+                    if (email.equals(find_email)) {
+                        return password.equals(find_password);
+                    } else return false;
+                }
+
             }
+            return true;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
